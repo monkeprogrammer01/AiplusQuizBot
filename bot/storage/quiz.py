@@ -1,8 +1,8 @@
-from db import AsyncSessionLocal
-from models import Quiz, Question, Answer, Option
+from bot.storage.db import AsyncSessionLocal
+from bot.storage.models import Quiz, Question, Answer, Option
 from sqlalchemy.future import select
 
-async def create_quiz(owner_id, title):
+async def create_quiz_in_db(owner_id, title):
     async with AsyncSessionLocal() as session:
         async with session.begin():
             quiz = Quiz(owner_id=owner_id, title=title)
@@ -18,12 +18,11 @@ async def get_quiz(quiz_id: int) -> Quiz | None:
         quiz = result.scalars().first()
         return quiz
 
-async def add_question(quiz_id: int, text: str, photo_url: str | None = None) -> Question:
+async def add_question(quiz_id: int, text: str, poll_id) -> Question:
     async with AsyncSessionLocal() as session:
         async with session.begin():
-            question = Question(quiz_id=quiz_id, text=text)
-            if photo_url:
-                question.photo_url = photo_url
+            question = Question(quiz_id=quiz_id, text=text, poll_id=poll_id)
+
             session.add(question)
             await session.flush()
             return question
