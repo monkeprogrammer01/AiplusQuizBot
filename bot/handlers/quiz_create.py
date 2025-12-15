@@ -1,10 +1,8 @@
 from aiogram import types, Router
 from aiogram.fsm.context import FSMContext
 from aiogram.fsm.state import StatesGroup, State
-from aiogram.types import Message, InputFile, ReplyKeyboardMarkup, KeyboardButton, KeyboardButtonPollType
-import random
-from aiogram.filters import CommandStart, Command
-from bot.storage import quiz
+from aiogram.types import Message, ReplyKeyboardMarkup, KeyboardButton, KeyboardButtonPollType
+from aiogram.filters import Command
 from bot.storage.quiz import add_question, add_option, create_quiz_in_db
 
 router = Router()

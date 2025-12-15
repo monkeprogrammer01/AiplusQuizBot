@@ -10,6 +10,15 @@ async def create_quiz_in_db(owner_id, title):
             await session.flush()
             return quiz
 
+async def get_quizzes(owner_id: int):
+    async with AsyncSessionLocal() as session:
+        result = await session.execute(
+            select(Quiz).where(Quiz.owner_id == owner_id)
+        )
+        quizzes = result.scalars().all()
+
+        return quizzes
+
 async def get_quiz(quiz_id: int) -> Quiz | None:
     async with AsyncSessionLocal() as session:
         result = await session.execute(
@@ -61,3 +70,38 @@ async def get_quiz_with_questions(quiz_id: int) -> Quiz | None:
         )
         quiz = result.scalars().first()
         return quiz
+
+
+async def get_full_quiz(quiz_id: int):
+    async with AsyncSessionLocal() as session:
+        result = await session.execute(
+            select(Quiz).where(Quiz.id == quiz_id)
+        )
+        quiz = result.scalars().first()
+
+        if not quiz:
+            return None
+
+        questions_result = await session.execute(
+            select(Question)
+            .where(Question.quiz_id == quiz_id)
+        )
+        questions = questions_result.scalars().all()
+
+        full_questions = []
+        for question in questions:
+            options_result = await session.execute(
+                select(Option)
+                .where(Option.question_id == question.id)
+            )
+            options = options_result.scalars().all()
+            full_questions.append({
+                'question': question,
+                'options': options
+            })
+
+        return {
+            'quiz': quiz,
+            'questions': full_questions
+        }
+
