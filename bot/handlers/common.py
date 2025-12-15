@@ -7,7 +7,7 @@ router = Router()
 
 @router.message(CommandStart())
 async def start(message: Message):
-    await message.answer("приветик, я пока могу только сказать насколько процентов алихан гей, но скоро буду уметь многое наверн")
+    await message.answer("Чтобы создать quiz напиши /create_quiz")
 
 @router.message(Command('is_alikhan_gay'))
 async def temp(message: Message):

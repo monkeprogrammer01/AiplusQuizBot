@@ -23,6 +23,9 @@ class CreateQuiz(StatesGroup):
 
 @router.message(Command("create_quiz"))
 async def create_quiz(message: Message, state: FSMContext):
+    if message.chat.type in ["group", "supergroup", "channel"]:
+        await message.answer("Создавать quizzes можно в личных сообщениях только")
+        return
     await state.clear()
     await message.answer("Название куиза")
     await state.set_state(CreateQuiz.waiting_for_title)
@@ -73,7 +76,7 @@ async def poll_received(message: Message, state: FSMContext):
             is_correct=(idx == poll.correct_option_id)
         )
 
-    await message.answer("Вопрос сохранён \nМожешь создать ещё один или /done")
+    await message.answer("Вопрос сохранён \nМожешь создать ещё один")
 
 @router.message(lambda m: m.text == "Завершить куиз")
 async def finish_quiz(message: Message, state: FSMContext):
