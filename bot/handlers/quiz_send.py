@@ -30,7 +30,7 @@ async def my_quizzes(message: types.Message):
 
     for quiz in quizzes:
         builder.button(
-            text=f"📋 {quiz.title}",
+            text=f"{quiz.title}",
             callback_data=f"sendquiz_{quiz.id}_{chat_id}"
         )
 
